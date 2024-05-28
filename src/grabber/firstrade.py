@@ -1,8 +1,9 @@
-from bs4 import BeautifulSoup
-import pandas as pd
 import argparse
-from selenium import webdriver
 import time
+
+import pandas as pd
+from bs4 import BeautifulSoup
+from selenium import webdriver
 
 
 class Firstrade():

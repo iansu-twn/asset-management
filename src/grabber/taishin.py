@@ -6,7 +6,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
 
-class Taishin():
+class Taishin:
     def __init__(self, id, uid, pwd):
         self.id = id
         self.uid = uid
@@ -14,28 +14,20 @@ class Taishin():
         self.driver = webdriver.Chrome()
 
     def login(self):
-        self.driver.get(
-            "https://richart.tw/WebBank/users/login?lang=zh-tw"
-        )
+        self.driver.get("https://richart.tw/WebBank/users/login?lang=zh-tw")
         time.sleep(3)
         # fill in the login info
-        id = self.driver.find_element(
-            "xpath",
-            "//*[@id='userId']/input"
-        )
+        id = self.driver.find_element("xpath", "//*[@id='userId']/input")
         id.send_keys(self.id)
 
-        uid = self.driver.find_element(
-            "xpath",
-            "//*[@id='userName']/input"
-        )
+        uid = self.driver.find_element("xpath", "//*[@id='userName']/input")
         uid.send_keys(self.uid)
 
         pwd = self.driver.find_element(
             "xpath",
             "/html/body/app-root/div/app-users/div/app-login/main/div/"
             + "div[1]/div/div[2]/div[1]/div[1]/form/div[1]"
-            + "/div/div[3]/div/input"
+            + "/div/div[3]/div/input",
         )
         pwd.send_keys(self.pwd)
 
@@ -46,7 +38,7 @@ class Taishin():
                 "xpath",
                 "/html/body/app-root/div/app-users/div/app-login/main/"
                 + "div/div[1]/div/div[2]/div[1]/div[1]/form/div[1]/div/"
-                + "div[4]/div/div[2]/div"
+                + "div[4]/div/div[2]/div",
             )
             image.screenshot("code.png")
             ocr = ddddocr.DdddOcr(show_ad=False)
@@ -57,20 +49,20 @@ class Taishin():
                 "xpath",
                 "/html/body/app-root/div/app-users/div/app-login/main/"
                 + "div/div[1]/div/div[2]/div[1]/div[1]/form/div[1]/div/"
-                + "div[4]/div/div[1]/div/input"
+                + "div[4]/div/div[1]/div/input",
             )
             code.send_keys(catch)
             self.driver.find_element(
                 "xpath",
                 "/html/body/app-root/div/app-users/div/app-login/main/"
-                + "div/div[1]/div/div[2]/div[1]/div[1]/form/div[2]/button"
+                + "div/div[1]/div/div[2]/div[1]/div[1]/form/div[2]/button",
             ).click()
             try:
                 time.sleep(5)
                 elem = self.driver.find_element(
                     "xpath",
                     "/html/body/ngb-modal-window/div/div/app-modal/"
-                    + "div[2]/div/button"
+                    + "div[2]/div/button",
                 )
                 elem.click()
             except NoSuchElementException:

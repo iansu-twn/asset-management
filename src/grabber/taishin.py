@@ -1,4 +1,6 @@
 import argparse
+import logging
+import re
 import time
 
 import ddddocr
@@ -69,6 +71,33 @@ class Taishin:
                 flag = False
         time.sleep(3)
 
+    def info(self):
+        unhidden = self.driver.find_element(
+            "xpath", "//*[@id='toggleShowAmount']/i[1]"
+        )  # noqa: E501
+        unhidden.click()
+        time.sleep(3)
+        elem = self.driver.find_element(
+            "xpath", "//*[@id='first-element-introduction']/div[1]/div[2]/div"
+        )
+        cash = self.extract_cash(elem)
+        return cash
+
+    def extract_cash(self, elem):
+        try:
+            text = elem.text.strip()
+            cash = re.sub(r"[^\d.-]", "", text)
+            return int(cash)
+        except ValueError:
+            logging.info("Couldn't extract cash")
+            return 0
+        except Exception as e:
+            logging.info(e)
+            return 0
+
+    def close_driver(self):
+        self.driver.close()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("TAISHIN INFO")
@@ -78,3 +107,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     client = Taishin(args.id, args.uid, args.pwd)
     client.login()
+    cash = client.info()
+    print(cash)
+    client.close_driver()

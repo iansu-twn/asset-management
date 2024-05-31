@@ -1,4 +1,6 @@
 import argparse
+import logging
+import re
 import time
 
 from selenium import webdriver
@@ -30,6 +32,39 @@ class Cathy:
         btn_login.click()
         time.sleep(3)
 
+    def info(self):
+        # ntd info
+        time.sleep(2)
+        elem_ntd = self.driver.find_element("xpath", "//*[@id='TD-balance']")
+        ntd = self.extract_cash(elem_ntd)
+
+        # foreign info
+        self.driver.find_element("xpath", "//*[@id='tabFTD']").click()
+        time.sleep(2)
+        elem_foreign = self.driver.find_element(
+            "xpath", "//*[@id='FTD-balance']"
+        )  # noqa: E501
+        foreign = self.extract_cash(elem_foreign)
+
+        # stock info
+        self.driver.find_element("xpath", "//*[@id='tabFUND']").click()
+        time.sleep(2)
+        elem_stock = self.driver.find_element(
+            "xpath", "//*[@id='FUND-balance']"
+        )  # noqa: E501
+        stock = self.extract_cash(elem_stock)
+
+        return ntd, foreign, stock
+
+    def extract_cash(self, elem):
+        try:
+            text = elem.text.strip()
+            cash = re.sub(r"[^\d.-]", "", text)
+            return int(cash)
+        except Exception as e:
+            logging.info(e)
+            return 0
+
     def close_driver(self):
         self.driver.close()
 
@@ -42,4 +77,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     client = Cathy(args.id, args.uid, args.pwd)
     client.login()
+    ntd, foreign, stock = client.info()
+    print(f"NTD: {ntd}")
+    print(f"foreign: {foreign}")
+    print(f"stock: {stock}")
+    print(f"total: {ntd+foreign+stock}")
     client.close_driver()

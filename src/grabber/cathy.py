@@ -65,6 +65,11 @@ class Cathy:
             logging.info(e)
             return 0
 
+    def logout(self):
+        self.driver.find_element(
+            "xpath", "//*[@id='sub-menu']/div/div[3]/a[1]"
+        ).click()  # noqa: E501
+
     def close_driver(self):
         self.driver.close()
 
@@ -82,4 +87,5 @@ if __name__ == "__main__":
     print(f"foreign: {foreign}")
     print(f"stock: {stock}")
     print(f"total: {ntd+foreign+stock}")
+    client.logout()
     client.close_driver()

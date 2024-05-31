@@ -30,19 +30,23 @@ class Ipost:
             "xpath", "//*[@id='content_wh']/div[1]/div/ul/li[1]/a"
         ).click()
 
-        # fill in the login info
-        id = self.driver.find_element("xpath", "//*[@id='cifID']")
-        id.send_keys(self.id)
-
-        uid = self.driver.find_element("xpath", "//*[@id='userID_1_Input']")
-        uid.send_keys(self.uid)
-
-        pwd = self.driver.find_element("xpath", "//*[@id='userPWD_1_Input']")
-        pwd.send_keys(self.pwd)
-
-        # ocr verification
         flag = True
         while flag:
+            # fill in the login info
+            id = self.driver.find_element("xpath", "//*[@id='cifID']")
+            id.send_keys(self.id)
+
+            uid = self.driver.find_element(
+                "xpath", "//*[@id='userID_1_Input']"
+            )  # noqa: E501
+            uid.send_keys(self.uid)
+
+            pwd = self.driver.find_element(
+                "xpath", "//*[@id='userPWD_1_Input']"
+            )  # noqa: E501
+            pwd.send_keys(self.pwd)
+
+            # ocr verification
             image = self.driver.find_element(
                 "xpath", "//*[@id='tab1']/div[14]/img"
             )  # noqa: E501
@@ -60,14 +64,8 @@ class Ipost:
                 "//*[@id='tab1']/div[12]/a",
             ).click()
             try:
-                time.sleep(5)
-                elem = self.driver.find_element(
-                    "xpath",
-                    "/html/body/ngb-modal-window/div/div/app-modal/"
-                    + "div[2]/div/button",
-                )
-                elem.click()
-            except NoSuchElementException:
+                self.driver.switch_to.alert.accept()
+            except Exception:
                 flag = False
         time.sleep(3)
 

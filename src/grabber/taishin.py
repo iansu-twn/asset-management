@@ -95,6 +95,16 @@ class Taishin:
             logging.info(e)
             return 0
 
+    def logout(self):
+        self.driver.find_element(
+            "xpath",
+            "/html/body/app-root/div/app-dashboard/richart-header/header/div/div/nav/div[2]/div/a",  # noqa: E501
+        ).click()
+        self.driver.find_element(
+            "xpath",
+            "/html/body/ngb-modal-window/div/div/app-modal/div[2]/div[2]/button",  # noqa: E501
+        ).click()
+
     def close_driver(self):
         self.driver.close()
 
@@ -109,4 +119,5 @@ if __name__ == "__main__":
     client.login()
     cash = client.info()
     print(cash)
+    client.logout()
     client.close_driver()

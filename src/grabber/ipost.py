@@ -1,6 +1,7 @@
 import argparse
 import time
 
+import ddddocr
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
@@ -39,7 +40,36 @@ class Ipost:
         pwd = self.driver.find_element("xpath", "//*[@id='userPWD_1_Input']")
         pwd.send_keys(self.pwd)
 
-        # ocr verification code
+        # ocr verification
+        flag = True
+        while flag:
+            image = self.driver.find_element(
+                "xpath", "//*[@id='tab1']/div[14]/img"
+            )  # noqa: E501
+            image.screenshot("code.png")
+            ocr = ddddocr.DdddOcr(show_ad=False)
+            with open("code.png", "rb") as fp:
+                img = fp.read()
+            catch = ocr.classification(img)
+            code = self.driver.find_element(
+                "xpath", "//*[@id='tab1']/div[11]/input"
+            )  # noqa: E501
+            code.send_keys(catch)
+            self.driver.find_element(
+                "xpath",
+                "//*[@id='tab1']/div[12]/a",
+            ).click()
+            try:
+                time.sleep(5)
+                elem = self.driver.find_element(
+                    "xpath",
+                    "/html/body/ngb-modal-window/div/div/app-modal/"
+                    + "div[2]/div/button",
+                )
+                elem.click()
+            except NoSuchElementException:
+                flag = False
+        time.sleep(3)
 
 
 if __name__ == "__main__":
@@ -48,6 +78,5 @@ if __name__ == "__main__":
     parser.add_argument("--uid", type=str)
     parser.add_argument("--pwd", type=str)
     args = parser.parse_args()
-
     client = Ipost(args.id, args.uid, args.pwd)
     client.login()

@@ -1,17 +1,12 @@
 import argparse
-import logging
-import re
 import time
 
-from selenium import webdriver
+from asset import Asset
 
 
-class Cathy:
-    def __init__(self, id, uid, pwd):
-        self.id = id
-        self.uid = uid
-        self.pwd = pwd
-        self.driver = webdriver.Chrome()
+class Cathy(Asset):
+    def __init__(self, arg):
+        super().__init__(arg)
 
     def login(self):
         self.driver.get("https://www.cathaybk.com.tw/mybank/")
@@ -56,31 +51,16 @@ class Cathy:
 
         return ntd, foreign, stock
 
-    def extract_cash(self, elem):
-        try:
-            text = elem.text.strip()
-            cash = re.sub(r"[^\d.-]", "", text)
-            return int(cash)
-        except Exception as e:
-            logging.info(e)
-            return 0
-
     def logout(self):
         self.driver.find_element(
             "xpath", "//*[@id='sub-menu']/div/div[3]/a[1]"
         ).click()  # noqa: E501
 
-    def close_driver(self):
-        self.driver.close()
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("CATHY INFO")
-    parser.add_argument("--id", type=str)
-    parser.add_argument("--uid", type=str)
-    parser.add_argument("--pwd", type=str)
     args = parser.parse_args()
-    client = Cathy(args.id, args.uid, args.pwd)
+    client = Cathy("CATHY")
     client.login()
     ntd, foreign, stock = client.info()
     print(f"NTD: {ntd}")

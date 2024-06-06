@@ -1,19 +1,14 @@
 import argparse
-import logging
-import re
 import time
 
 import ddddocr
-from selenium import webdriver
+from asset import Asset
 from selenium.common.exceptions import NoSuchElementException
 
 
-class Ipost:
-    def __init__(self, id, uid, pwd):
-        self.id = id
-        self.uid = uid
-        self.pwd = pwd
-        self.driver = webdriver.Chrome()
+class Ipost(Asset):
+    def __init__(self, arg):
+        super().__init__(arg)
 
     def login(self):
         self.driver.get("https://ipost.post.gov.tw/pst/home.html")
@@ -80,30 +75,12 @@ class Ipost:
         cash = self.extract_cash(elem)
         return cash
 
-    def extract_cash(self, elem):
-        try:
-            text = elem.text.strip()
-            cash = re.sub(r"[^\d.-]", "", text)
-            return int(cash)
-        except ValueError:
-            logging.info("Couldn't extract cash")
-            return 0
-        except Exception as e:
-            print(e)
-            return 0
-
-    def close_driver(self):
-        self.driver.close()
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("IPOST INFO")
-    parser.add_argument("--id", type=str)
-    parser.add_argument("--uid", type=str)
-    parser.add_argument("--pwd", type=str)
     args = parser.parse_args()
-    client = Ipost(args.id, args.uid, args.pwd)
+    client = Ipost("IPOST")
     client.login()
     cash = client.info()
-    print(cash)
+    print(f"Cash: {cash}")
     client.close_driver()

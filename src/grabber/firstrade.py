@@ -2,16 +2,13 @@ import argparse
 import time
 
 import pandas as pd
+from asset import Asset
 from bs4 import BeautifulSoup
-from selenium import webdriver
 
 
-class Firstrade:
-    def __init__(self, uid, pwd, pin):
-        self.uid = uid
-        self.pwd = pwd
-        self.pin = pin
-        self.driver = webdriver.Chrome()
+class Firstrade(Asset):
+    def __init__(self, arg):
+        super().__init__(arg)
 
     def login(self):
         self.driver.get(
@@ -92,11 +89,8 @@ class Firstrade:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("FIRSTRADE INFO")
-    parser.add_argument("--uid", type=str, help="uid of the firstrade account")
-    parser.add_argument("--pwd", type=str, help="pwd of the firstrade account")
-    parser.add_argument("--pin", type=str, help="pin of the firstrade account")
     args = parser.parse_args()
-    client = Firstrade(args.uid, args.pwd, args.pin)
+    client = Firstrade("FIRSTRADE")
     client.login()
     cash, stock = client.info()
     print(f"cash: {round(cash, 3)}")
@@ -105,3 +99,4 @@ if __name__ == "__main__":
     print(f"pnl: {round(stock.pnl.sum(), 3)}")
     print(f"cost: {round(stock.total_cost.sum(), 3)}")
     print(f"pnl_%: {round(stock.pnl.sum()/stock.total_cost.sum() * 100, 3)}")
+    client.close_driver()

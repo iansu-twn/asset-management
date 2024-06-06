@@ -1,20 +1,14 @@
 import argparse
 
-from selenium import webdriver
+from asset import Asset
 
 
-class Ctbc:
-    def __init__(self, id, uid, pwd):
-        self.id = id
-        self.uid = uid
-        self.pwd = pwd
-        self.driver = webdriver.Chrome()
+class Ctbc(Asset):
+    def __init__(self, arg):
+        super().__init__(arg)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("CTBC INFO")
-    parser.add_argument("--id", type=str)
-    parser.add_argument("--uid", type=str)
-    parser.add_argument("--pwd", type=str)
     args = parser.parse_args()
-    client = Ctbc(args.id, args.uid, args.pwd)
+    client = Ctbc("CTBC")

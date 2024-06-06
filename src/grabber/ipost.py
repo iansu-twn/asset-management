@@ -17,23 +17,22 @@ class Ipost:
 
     def login(self):
         self.driver.get("https://ipost.post.gov.tw/pst/home.html")
-        # check scam msg
-        try:
-            elem = self.driver.find_element(
-                "xpath", "//*[@id='modal']/div[2]/button"
-            )  # noqa: E501
-            elem.click()
-        except NoSuchElementException:
-            pass
-
-        # change login page
-        time.sleep(3)
-        self.driver.find_element(
-            "xpath", "//*[@id='content_wh']/div[1]/div/ul/li[1]/a"
-        ).click()
-
         flag = True
         while flag:
+            try:
+                elem = self.driver.find_element(
+                    "xpath", "//*[@id='modal']/div[2]/button"
+                )  # noqa: E501
+                elem.click()
+            except NoSuchElementException:
+                pass
+
+            # change login page
+            time.sleep(3)
+            self.driver.find_element(
+                "xpath", "//*[@id='content_wh']/div[1]/div/ul/li[1]/a"
+            ).click()
+            time.sleep(3)
             # fill in the login info
             id = self.driver.find_element("xpath", "//*[@id='cifID']")
             id.send_keys(self.id)
@@ -69,7 +68,10 @@ class Ipost:
                 self.driver.switch_to.alert.accept()
             except Exception:
                 flag = False
-        time.sleep(3)
+                break
+            self.driver.refresh()
+            time.sleep(3)
+        time.sleep(10)
 
     def info(self):
         elem = self.driver.find_element(

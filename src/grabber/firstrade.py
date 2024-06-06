@@ -104,3 +104,4 @@ if __name__ == "__main__":
     print(f"asset: {round(cash + stock.cap.sum(), 3)}")
     print(f"pnl: {round(stock.pnl.sum(), 3)}")
     print(f"cost: {round(stock.total_cost.sum(), 3)}")
+    print(f"pnl_%: {round(stock.pnl.sum()/stock.total_cost.sum() * 100, 3)}")

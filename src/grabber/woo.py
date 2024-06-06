@@ -1,5 +1,6 @@
 import hashlib
 import hmac
+import json
 
 from asset import Asset
 
@@ -21,3 +22,9 @@ class Woo(Asset):
             "x-api-timestamp": self.timestamp,
             "Content-Type": "application/json",
         }
+
+    def getBalance(self):
+        method = "GET"
+        endpoint = "/v3/balances"
+        res = self.send_requests(method, endpoint)
+        print(json.dumps(res, indent=2))

@@ -49,14 +49,23 @@ class Firstrade(Asset):
                 By.XPATH, "//*[@id='form-pin']/div[2]/button"
             )  # noqa: E501
             btn_pin.click()
-            time.sleep(5)
+
+            # confirm login success
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "//*[@id='maincontent']/div[1]/div[1]/div[1]/h1",
+                    )  # noqa: E501
+                )
+            )
+            logging.info(f"{self.exchange} LOGIN SUCCESSFUL")
         except Exception as e:
             logging.error(f"Error during login: {e}")
             self.close_driver(self.exchange)
 
     def info(self):
         try:
-            logging.info(f"{self.exchange} LOGIN SUCCESSFUL")
             self.driver.find_element(
                 By.XPATH, "//*[@id='myaccount_link']/a"
             ).click()  # noqa: E501

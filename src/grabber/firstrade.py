@@ -60,13 +60,20 @@ class Firstrade(Asset):
             self.driver.find_element(
                 By.XPATH, "//*[@id='myaccount_link']/a"
             ).click()  # noqa: E501
-            time.sleep(5)
 
-            # cash
-            cash_text = self.driver.find_element(
-                By.XPATH,
-                "//*[@id='maincontent']/div/table/tbody/tr/td[1]/div/div[2]/table[1]/tbody/tr[1]/td[1]",  # noqa: E501
-            ).text
+            cash_text = (
+                WebDriverWait(self.driver, 10)
+                .until(
+                    EC.visibility_of_element_located(
+                        (
+                            By.XPATH,
+                            "//*[@id='maincontent']/div/table/tbody/tr/"
+                            + "td[1]/div/div[2]/table[1]/tbody/tr[1]/td[1]",
+                        )
+                    )
+                )
+                .text
+            )
             cash = float(cash_text.replace(",", "").strip()[1:])
 
             # stock

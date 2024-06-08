@@ -1,13 +1,15 @@
+import argparse
 import hashlib
 import hmac
-import json
+import logging
 
+import pandas as pd
 from asset import Asset
 
 
 class Woo(Asset):
-    def __init__(self, arg):
-        super().__init__(arg)
+    def __init__(self, exchange):
+        super().__init__(exchange)
 
     def getSignature(self, method, endpoint, body=""):
         sign_string = f"{self.timestamp}{method}{endpoint}{body}"
@@ -26,5 +28,30 @@ class Woo(Asset):
     def getBalance(self):
         method = "GET"
         endpoint = "/v3/balances"
-        res = self.send_requests(method, endpoint)
-        print(json.dumps(res, indent=2))
+        try:
+            res = self.send_requests(method, endpoint)
+            rows = []
+            for row in res.get("data").get("holding"):
+                dt = {
+                    "token": row["token"],
+                    "holding": row["holding"] + row["frozen"] + row["staked"],
+                    "price": row["markPrice"],
+                }
+                rows.append(dt)
+            df = pd.DataFrame(rows)
+            df["value"] = df["holding"] * df["price"]
+            return df
+        except Exception as e:
+            logging.error(f"Error occurred while fetching balances: {e}")
+            return pd.DataFrame()
+
+
+if __name__ == "__main__":
+    logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.INFO)
+    parser = argparse.ArgumentParser("WOO INFO")
+    args = parser.parse_args()
+    exchange = "WOO"
+
+    # get balance
+    balance = Woo(exchange).getBalance()
+    print(f"Cash: {round(balance.value.sum(), 3)}")

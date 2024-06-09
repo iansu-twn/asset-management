@@ -96,7 +96,9 @@ class Cathy(Asset):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.INFO)
+    logging.basicConfig(
+        format="%(asctime)s %(levelname)s:%(message)s", level=logging.INFO
+    )
     parser = argparse.ArgumentParser("CATHY INFO")
     args = parser.parse_args()
     exchange = "CATHY"

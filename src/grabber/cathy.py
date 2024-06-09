@@ -80,9 +80,17 @@ class Cathy(Asset):
 
     def logout(self):
         try:
-            self.driver.find_element(
-                By.XPATH, "//*[@id='sub-menu']/div/div[3]/a[1]"
-            ).click()
+            btn_logout = WebDriverWait(self.driver, 10).until(
+                (
+                    EC.visibility_of_element_located(
+                        (
+                            By.XPATH,
+                            "//*[@id='m-nav-logout']",
+                        )  # xpath is different from no-headless way
+                    )
+                )
+            )
+            btn_logout.click()
         except Exception as e:
             logging.error(f"Error when logout: {e}")
 

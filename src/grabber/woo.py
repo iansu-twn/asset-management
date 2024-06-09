@@ -40,6 +40,7 @@ class Woo(Asset):
                 rows.append(dt)
             df = pd.DataFrame(rows)
             df["value"] = df["holding"] * df["price"]
+            logging.info(f"{self.exchange} GET BALANCE SUCCESS")
             return df
         except Exception as e:
             logging.error(f"Error occurred while fetching balances: {e}")
@@ -47,11 +48,17 @@ class Woo(Asset):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.INFO)
+    logging.basicConfig(
+        format="%(asctime)s %(levelname)s:%(message)s", level=logging.INFO
+    )
     parser = argparse.ArgumentParser("WOO INFO")
     args = parser.parse_args()
     exchange = "WOO"
+    client = Woo(exchange)
 
-    # get balance
-    balance = Woo(exchange).getBalance()
-    print(f"Cash: {round(balance.value.sum(), 3)}")
+    try:
+        # get balance
+        balance = client.getBalance()
+        print(f"Cash: {round(balance.value.sum(), 3)}")
+    except Exception as e:
+        logging.error(f"Error: {e}")
